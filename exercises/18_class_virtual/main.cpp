@@ -42,39 +42,41 @@ int main(int argc, char **argv) {
     C c;
     D d;
 
-    ASSERT(a.virtual_name() == '?', MSG);
-    ASSERT(b.virtual_name() == '?', MSG);
-    ASSERT(c.virtual_name() == '?', MSG);
-    ASSERT(d.virtual_name() == '?', MSG);
-    ASSERT(a.direct_name() == '?', MSG);
-    ASSERT(b.direct_name() == '?', MSG);
-    ASSERT(c.direct_name() == '?', MSG);
-    ASSERT(d.direct_name() == '?', MSG);
+    ASSERT(a.virtual_name() == 'A', MSG);  // A's virtual_name is 'A'
+    ASSERT(b.virtual_name() == 'B', MSG);  // B overrides virtual_name with 'B'
+    ASSERT(c.virtual_name() == 'C', MSG);  // C overrides virtual_name with 'C'
+    ASSERT(d.virtual_name() == 'C', MSG);  // d inherits from C, and C's virtual_name is final
+
+    ASSERT(a.direct_name() == 'A', MSG);   // A's direct_name is 'A'
+    ASSERT(b.direct_name() == 'B', MSG);   // B's direct_name is 'B'
+    ASSERT(c.direct_name() == 'C', MSG);   // C's direct_name is 'C'
+    ASSERT(d.direct_name() == 'D', MSG);   // D's direct_name is 'D'
 
     A &rab = b;
     B &rbc = c;
     C &rcd = d;
 
-    ASSERT(rab.virtual_name() == '?', MSG);
-    ASSERT(rbc.virtual_name() == '?', MSG);
-    ASSERT(rcd.virtual_name() == '?', MSG);
-    ASSERT(rab.direct_name() == '?', MSG);
-    ASSERT(rbc.direct_name() == '?', MSG);
-    ASSERT(rcd.direct_name() == '?', MSG);
+    ASSERT(rab.virtual_name() == 'B', MSG); // rab resolves virtual_name to B's implementation
+    ASSERT(rbc.virtual_name() == 'C', MSG); // rbc resolves virtual_name to C's implementation
+    ASSERT(rcd.virtual_name() == 'C', MSG); // rcd resolves virtual_name to C's implementation
+
+    ASSERT(rab.direct_name() == 'A', MSG);  // rab resolves direct_name based on A (compile-time type)
+    ASSERT(rbc.direct_name() == 'B', MSG);  // rbc resolves direct_name based on B (compile-time type)
+    ASSERT(rcd.direct_name() == 'C', MSG);  // rcd resolves direct_name based on C (compile-time type)
 
     A &rac = c;
     B &rbd = d;
 
-    ASSERT(rac.virtual_name() == '?', MSG);
-    ASSERT(rbd.virtual_name() == '?', MSG);
-    ASSERT(rac.direct_name() == '?', MSG);
-    ASSERT(rbd.direct_name() == '?', MSG);
+    ASSERT(rac.virtual_name() == 'C', MSG); // rac resolves virtual_name to C's implementation
+    ASSERT(rbd.virtual_name() == 'C', MSG); // rbd resolves virtual_name to C's implementation
+
+    ASSERT(rac.direct_name() == 'A', MSG);  // rac resolves direct_name based on A (compile-time type)
+    ASSERT(rbd.direct_name() == 'B', MSG);  // rbd resolves direct_name based on B (compile-time type)
 
     A &rad = d;
 
-    ASSERT(rad.virtual_name() == '?', MSG);
-    ASSERT(rad.direct_name() == '?', MSG);
-
+    ASSERT(rad.virtual_name() == 'C', MSG); // rad resolves virtual_name to C's implementation
+    ASSERT(rad.direct_name() == 'A', MSG); 
     return 0;
 }
 
